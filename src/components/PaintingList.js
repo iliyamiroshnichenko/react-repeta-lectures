@@ -20,7 +20,11 @@ const PaintingList = ({ paintings }) => (
 );
 
 PaintingList.propTypes = {
-  paintings: PropTypes.arrayOf().isRequired,
+  paintings: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default PaintingList;
