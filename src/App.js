@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import Logo from "./components/Logo";
 import PaintingList from "./components/PaintingList";
 import Panel from "./components/Panel";
