@@ -1,9 +1,9 @@
-// import React from "react";
 import PropTypes from "prop-types";
 import defaultImage from "./default.jpg";
+import "./Painting.css";
 
 const Painting = ({ url, title, price, profileUrl, tag, quantity }) => (
-  <>
+  <div className="Painting">
     <img src={url} alt={title} width={480}></img>
     <h2>{title}</h2>
     <p>
@@ -12,7 +12,7 @@ const Painting = ({ url, title, price, profileUrl, tag, quantity }) => (
     <p>Цена: {price} кредитов</p>
     <p>Доступность: {quantity < 10 ? "Заканчивается" : "Есть в наличии"}</p>
     <button type="button">Добавить в корзину</button>
-  </>
+  </div>
 );
 
 Painting.defaultProps = {

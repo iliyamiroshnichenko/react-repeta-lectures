@@ -1,4 +1,3 @@
-// import React from "react";
 import PropTypes from "prop-types";
 
 const Logo = ({ text }) => <h1>{text}</h1>;
