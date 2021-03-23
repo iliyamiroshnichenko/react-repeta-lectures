@@ -1,7 +1,6 @@
-import "./ColorPicker.css";
+import './ColorPicker.css';
 
 const ColorPicker = ({ options }) => {
-  console.log(options);
   return (
     <div className="ColorPicker">
       <h2 className="ColorPicker__title">Color Picker</h2>

@@ -1,7 +1,5 @@
-import PropTypes from "prop-types";
-import styles from "./Panel.module.css";
-
-console.log(styles);
+import PropTypes from 'prop-types';
+import styles from './Panel.module.css';
 
 const Panel = ({ title, children }) => (
   <div className={styles.container}>
@@ -11,7 +9,7 @@ const Panel = ({ title, children }) => (
 );
 
 Panel.defaultProps = {
-  title: "",
+  title: '',
   children: [],
 };
 
