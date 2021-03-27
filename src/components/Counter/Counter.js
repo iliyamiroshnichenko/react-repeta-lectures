@@ -1,49 +1,49 @@
 import { Component, useState } from 'react';
+import Controls from './Controls';
 import './Counter.css';
 
 class CounterClass extends Component {
+  static defaultProps = {
+    initialvalue: 5,
+  };
+
   state = {
-    value: 0,
+    value: this.props.initialvalue,
   };
 
   handleIncrement = () => {
-    this.setState({ value: this.state.value + 1 });
+    this.setState(prState => ({
+      value: prState.value + 1,
+    }));
   };
 
   handleDecrement = () => {
-    this.setState({ value: this.state.value - 1 });
+    this.setState(prState => ({
+      value: prState.value - 1,
+    }));
   };
 
   render() {
     return (
       <div className="Counter">
         <span className="Counter__value">{this.state.value}</span>
-        <div className="Counter__controls">
-          <button type="button" onClick={this.handleIncrement}>
-            Увеличить на 1
-          </button>
-          <button type="button" onClick={this.handleDecrement}>
-            Уменьшить на 1
-          </button>
-        </div>
+        <Controls
+          onIncrement={this.handleIncrement}
+          onDecrement={this.handleDecrement}
+        />
       </div>
     );
   }
 }
 
-const CounterFunc = () => {
-  const [value, setValue] = useState(0);
+const CounterFunc = ({ initialvalue }) => {
+  const [value, setValue] = useState(initialvalue);
+  const handleIncrement = () => setValue(value + 1);
+  const handleDecrement = () => setValue(value - 1);
   return (
     <div className="Counter">
       <span className="Counter__value">{value}</span>
-      <div className="Counter__controls">
-        <button type="button" onClick={() => setValue(value + 1)}>
-          Увеличить на 1
-        </button>
-        <button type="button" onClick={() => setValue(value - 1)}>
-          Уменьшить на 1
-        </button>
-      </div>
+      <Controls onIncrement={handleIncrement} onDecrement={handleDecrement} />
     </div>
   );
 };

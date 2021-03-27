@@ -19,8 +19,8 @@ const App = () => {
   return (
     <>
       <h1>Состояние компонента</h1>
-      <CounterClass />
-      <CounterFunc />
+      <CounterClass initialvalue={10} />
+      <CounterFunc initialvalue={10} />
     </>
   );
 };
