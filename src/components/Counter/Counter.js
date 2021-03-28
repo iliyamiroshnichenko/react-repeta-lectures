@@ -1,5 +1,6 @@
 import { Component, useState } from 'react';
 import Controls from './Controls';
+import Value from './Value';
 import './Counter.css';
 
 class CounterClass extends Component {
@@ -26,7 +27,7 @@ class CounterClass extends Component {
   render() {
     return (
       <div className="Counter">
-        <span className="Counter__value">{this.state.value}</span>
+        <Value value={this.state.value} />
         <Controls
           onIncrement={this.handleIncrement}
           onDecrement={this.handleDecrement}
@@ -42,7 +43,7 @@ const CounterFunc = ({ initialvalue }) => {
   const handleDecrement = () => setValue(value - 1);
   return (
     <div className="Counter">
-      <span className="Counter__value">{value}</span>
+      <Value value={value} />
       <Controls onIncrement={handleIncrement} onDecrement={handleDecrement} />
     </div>
   );
