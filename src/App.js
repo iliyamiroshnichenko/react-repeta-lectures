@@ -1,14 +1,9 @@
-// import PaintingList from './components/PaintingList/PaintingList';
-// import Panel from './components/Panel/Panel';
-import {
-  ColorPickerFunc,
-  ColorPickerClass,
-} from './components/ColorPicker/ColorPicker';
-// import Notification from './components/Notification/Notification';
-// import Layout from './components/Layout/Layout';
-// import { CounterClass, CounterFunc } from './components/Counter/Counter';
-// import { DropdownClass, DropdownFunc } from './components/Dropdown/Dropdown';
-// import paintings from './paintings.json';
+import ColorPicker from './components/ColorPicker';
+import Counter from './components/Counter';
+import Dropdown from './components/Dropdown';
+import { useState } from 'react';
+import TodoList from './components/TodoList';
+import initialTodos from './todos.json';
 
 const colorPickerOptions = [
   { label: 'red', color: '#F44336' },
@@ -20,17 +15,59 @@ const colorPickerOptions = [
 ];
 
 const App = () => {
+  const [todos, setTodos] = useState(initialTodos);
+  const deleteTodo = todoId =>
+    setTodos(prState => prState.filter(({ id }) => id !== todoId));
+
+  const completedTodos = todos.reduce(
+    (acc, { completed }) => (completed ? acc + 1 : acc),
+    0,
+  );
   return (
     <>
       <h1>Состояние компонента</h1>
-      {/* <DropdownClass />
-      <DropdownFunc /> */}
-      {/* <CounterClass initialvalue={10} />
-      <CounterFunc initialvalue={10} /> */}
-      <ColorPickerClass options={colorPickerOptions} />
-      <ColorPickerFunc options={colorPickerOptions} />
+      <Dropdown />
+      <Counter initialvalue={10} />
+      <ColorPicker options={colorPickerOptions} />
+
+      <div>
+        <p>Общее кол-во: {todos.length}</p>
+        <p>Кол-во выполненных: {completedTodos}</p>
+      </div>
+      <TodoList todos={todos} onDeleteTodo={deleteTodo} />
     </>
   );
 };
+
+// class App extends Component {
+//   state = {
+//     todos: initialTodos,
+//   };
+
+//   deleteTodo = todoId => {
+//     this.setState(prevState => ({
+//       todos: prevState.todos.filter(({ id }) => id !== todoId),
+//     }));
+//   };
+
+//   render() {
+//     const { todos } = this.state;
+
+//     const completedTodos = todos.reduce(
+//       (acc, { completed }) => (completed ? acc + 1 : acc),
+//       0,
+//     );
+//     return (
+//       <>
+//         <h1>Состояние компонента</h1>
+//         <div>
+//           <p>Общее кол-во: {todos.length}</p>
+//           <p>Кол-во выполненных: {completedTodos}</p>
+//         </div>
+//         <TodoList todos={todos} onDeleteTodo={this.deleteTodo} />
+//       </>
+//     );
+//   }
+// }
 
 export default App;

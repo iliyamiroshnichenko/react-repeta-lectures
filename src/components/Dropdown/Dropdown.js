@@ -1,35 +1,35 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import './Dropdown.css';
 
-class DropdownClass extends Component {
-  state = {
-    visible: false,
-  };
+// class DropdownClass extends Component {
+//   state = {
+//     visible: false,
+//   };
 
-  toggle = () => {
-    this.setState(prevState => ({
-      visible: !prevState.visible,
-    }));
-  };
+//   toggle = () => {
+//     this.setState(prevState => ({
+//       visible: !prevState.visible,
+//     }));
+//   };
 
-  render() {
-    const { visible } = this.state;
-    return (
-      <div className="Dropdown">
-        <button
-          type="button"
-          className="Dropdown__toggle"
-          onClick={this.toggle}
-        >
-          {visible ? 'Скрыть' : 'Показать'}
-        </button>
-        {visible && <div className="Dropdown__menu">Выпадающее меню</div>}
-      </div>
-    );
-  }
-}
+//   render() {
+//     const { visible } = this.state;
+//     return (
+//       <div className="Dropdown">
+//         <button
+//           type="button"
+//           className="Dropdown__toggle"
+//           onClick={this.toggle}
+//         >
+//           {visible ? 'Скрыть' : 'Показать'}
+//         </button>
+//         {visible && <div className="Dropdown__menu">Выпадающее меню</div>}
+//       </div>
+//     );
+//   }
+// }
 
-const DropdownFunc = () => {
+const Dropdown = () => {
   const [visible, setVisible] = useState(false);
   const toggle = () => setVisible(!visible);
   return (
@@ -42,4 +42,4 @@ const DropdownFunc = () => {
   );
 };
 
-export { DropdownClass, DropdownFunc };
+export default Dropdown;
