@@ -9,6 +9,11 @@
   border: 1px solid black;
 }
 
-.TodoList__text {
+.text {
   margin-right: 5px;
+}
+
+.completed {
+  composes: text;
+  text-decoration: line-through;
 }

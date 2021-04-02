@@ -4,6 +4,8 @@
 import { useState, Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './todos.json';
+import { Form, Form2 } from './components/Form/Form';
+import TodoEditor from './components/TodoEditor/TodoEditor';
 
 // const colorPickerOptions = [
 //   { label: 'red', color: '#F44336' },
@@ -16,15 +18,16 @@ import initialTodos from './todos.json';
 
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
-  const [inputValue, setInputValue] = useState({ name: '', tag: '' });
-  const { name, tag } = inputValue;
 
   const deleteTodo = todoId =>
     setTodos(prState => prState.filter(({ id }) => id !== todoId));
 
-  const handleChange = e => {
-    const { name, value } = e.currentTarget;
-    setInputValue({ ...inputValue, [name]: value });
+  const toggleCompleted = todoId => {
+    setTodos(prState =>
+      prState.map(todo =>
+        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
   };
 
   const completedTodos = todos.reduce(
@@ -34,16 +37,7 @@ const App = () => {
   return (
     <>
       <h1>Состояние компонента</h1>
-      <form>
-        <label>
-          Имя
-          <input type="text" name="name" value={name} onChange={handleChange} />
-        </label>
-        <label>
-          Прозвище
-          <input type="text" name="tag" value={tag} onChange={handleChange} />
-        </label>
-      </form>
+      <Form />
       {/* <Dropdown /> */}
       {/* <Counter initialvalue={10} /> */}
       {/* <ColorPicker options={colorPickerOptions} /> */}
@@ -52,7 +46,11 @@ const App = () => {
         <p>Общее кол-во: {todos.length}</p>
         <p>Кол-во выполненных: {completedTodos}</p>
       </div>
-      <TodoList todos={todos} onDeleteTodo={deleteTodo} />
+      <TodoList
+        todos={todos}
+        onDeleteTodo={deleteTodo}
+        ontoggleCompleted={toggleCompleted}
+      />
     </>
   );
 };
@@ -60,8 +58,6 @@ const App = () => {
 class App2 extends Component {
   state = {
     todos: initialTodos,
-    name: '',
-    tag: '',
   };
 
   deleteTodo = todoId => {
@@ -70,9 +66,16 @@ class App2 extends Component {
     }));
   };
 
-  handleChange = e => {
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
+  toggleCompleted = todoId => {
+    this.setState(({ todos }) => ({
+      todos: todos.map(todo =>
+        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    }));
+  };
+
+  formSubmitHandler = data => {
+    console.log(data);
   };
 
   render() {
@@ -84,31 +87,18 @@ class App2 extends Component {
     return (
       <>
         <h1>Состояние компонента</h1>
-        <form>
-          <label>
-            Имя
-            <input
-              type="text"
-              name="name"
-              value={this.state.name}
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Прозвище
-            <input
-              type="text"
-              name="tag"
-              value={this.state.tag}
-              onChange={this.handleChange}
-            />
-          </label>
-        </form>
         <div>
           <p>Общее кол-во: {todos.length}</p>
           <p>Кол-во выполненных: {completedTodos}</p>
         </div>
-        <TodoList todos={todos} onDeleteTodo={this.deleteTodo} />
+        <TodoEditor />
+        {/* <Form2 onSubmit={this.formSubmitHandler} /> */}
+
+        <TodoList
+          todos={todos}
+          onDeleteTodo={this.deleteTodo}
+          ontoggleCompleted={this.toggleCompleted}
+        />
       </>
     );
   }
