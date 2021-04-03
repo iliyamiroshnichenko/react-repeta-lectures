@@ -4,8 +4,10 @@
 import { useState, Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './todos.json';
-import { Form, Form2 } from './components/Form/Form';
-import TodoEditor from './components/TodoEditor/TodoEditor';
+// import { Form, Form2 } from './components/Form/Form';
+import { TodoEditor, TodoEditorFunc } from './components/TodoEditor/TodoEditor';
+import shortid from 'shortid';
+import Filter from './components/Filter/Filter';
 
 // const colorPickerOptions = [
 //   { label: 'red', color: '#F44336' },
@@ -18,6 +20,16 @@ import TodoEditor from './components/TodoEditor/TodoEditor';
 
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
+  const [filter, setFilter] = useState('');
+
+  const addTodo = text => {
+    const todo = {
+      id: shortid.generate(),
+      text,
+      completed: false,
+    };
+    setTodos(prState => [todo, ...prState]);
+  };
 
   const deleteTodo = todoId =>
     setTodos(prState => prState.filter(({ id }) => id !== todoId));
@@ -30,24 +42,34 @@ const App = () => {
     );
   };
 
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
+  };
+
   const completedTodos = todos.reduce(
     (acc, { completed }) => (completed ? acc + 1 : acc),
     0,
   );
+
+  const normalizedFilter = filter.toLowerCase();
+  const filteredTodos = todos.filter(todo =>
+    todo.text.toLowerCase().includes(normalizedFilter),
+  );
   return (
     <>
       <h1>Состояние компонента</h1>
-      <Form />
+      {/* <Form /> */}
       {/* <Dropdown /> */}
       {/* <Counter initialvalue={10} /> */}
       {/* <ColorPicker options={colorPickerOptions} /> */}
-
       <div>
         <p>Общее кол-во: {todos.length}</p>
         <p>Кол-во выполненных: {completedTodos}</p>
       </div>
+      <TodoEditorFunc onSubmit={addTodo} />
+      <Filter value={filter} onChange={changeFilter} />
       <TodoList
-        todos={todos}
+        todos={filteredTodos}
         onDeleteTodo={deleteTodo}
         ontoggleCompleted={toggleCompleted}
       />
@@ -58,6 +80,16 @@ const App = () => {
 class App2 extends Component {
   state = {
     todos: initialTodos,
+    filter: '',
+  };
+
+  addTodo = text => {
+    const todo = {
+      id: shortid.generate(),
+      text,
+      completed: false,
+    };
+    this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
   };
 
   deleteTodo = todoId => {
@@ -78,12 +110,27 @@ class App2 extends Component {
     console.log(data);
   };
 
-  render() {
-    const { todos } = this.state;
-    const completedTodos = todos.reduce(
-      (acc, { completed }) => (completed ? acc + 1 : acc),
-      0,
+  changeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
+  getVisibleTodos = () => {
+    const { filter, todos } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return todos.filter(todo =>
+      todo.text.toLowerCase().includes(normalizedFilter),
     );
+  };
+
+  calculateCompletedTodos = () => {
+    const { todos } = this.state;
+    return todos.reduce((acc, { completed }) => (completed ? acc + 1 : acc), 0);
+  };
+
+  render() {
+    const { todos, filter } = this.state;
+    const completedTodos = this.calculateCompletedTodos();
+    const filteredTodos = this.getVisibleTodos();
     return (
       <>
         <h1>Состояние компонента</h1>
@@ -91,11 +138,12 @@ class App2 extends Component {
           <p>Общее кол-во: {todos.length}</p>
           <p>Кол-во выполненных: {completedTodos}</p>
         </div>
-        <TodoEditor />
+        <TodoEditor onSubmit={this.addTodo} />
+        <Filter value={filter} onChange={this.changeFilter} />
         {/* <Form2 onSubmit={this.formSubmitHandler} /> */}
 
         <TodoList
-          todos={todos}
+          todos={filteredTodos}
           onDeleteTodo={this.deleteTodo}
           ontoggleCompleted={this.toggleCompleted}
         />
