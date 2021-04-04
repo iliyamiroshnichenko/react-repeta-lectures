@@ -1,13 +1,14 @@
 // import ColorPicker from './components/ColorPicker';
 // import Counter from './components/Counter';
 // import Dropdown from './components/Dropdown';
-import { useState, Component } from 'react';
+import { useState, useEffect, Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './todos.json';
 // import { Form, Form2 } from './components/Form/Form';
 import { TodoEditor, TodoEditorFunc } from './components/TodoEditor/TodoEditor';
 import shortid from 'shortid';
 import Filter from './components/Filter/Filter';
+import { Modal, ModalFunc } from './components/Modal/Modal';
 
 // const colorPickerOptions = [
 //   { label: 'red', color: '#F44336' },
@@ -21,6 +22,18 @@ import Filter from './components/Filter/Filter';
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
   const [filter, setFilter] = useState('');
+  const [modal, setModal] = useState(false);
+
+  useEffect(() => {
+    const parsedTodos = JSON.parse(localStorage.getItem('todosHook'));
+    if (parsedTodos.length) {
+      setTodos(parsedTodos);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('todosHook', JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = text => {
     const todo = {
@@ -44,6 +57,10 @@ const App = () => {
 
   const changeFilter = e => {
     setFilter(e.currentTarget.value);
+  };
+
+  const toggleModal = () => {
+    setModal(prState => !prState);
   };
 
   const completedTodos = todos.reduce(
@@ -73,6 +90,21 @@ const App = () => {
         onDeleteTodo={deleteTodo}
         ontoggleCompleted={toggleCompleted}
       />
+      <button type="button" onClick={toggleModal}>
+        Открыть модалку
+      </button>
+      {modal && (
+        <ModalFunc onClose={toggleModal}>
+          <h1>Контент модалки</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
+            eveniet?
+          </p>
+          <button type="button" onClick={toggleModal}>
+            Закрыть
+          </button>
+        </ModalFunc>
+      )}
     </>
   );
 };
@@ -81,7 +113,21 @@ class App2 extends Component {
   state = {
     todos: initialTodos,
     filter: '',
+    showModal: false,
   };
+
+  componentDidMount() {
+    const parsedTodos = JSON.parse(localStorage.getItem('todos'));
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.todos !== prevState.todos) {
+      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+    }
+  }
 
   addTodo = text => {
     const todo = {
@@ -127,8 +173,14 @@ class App2 extends Component {
     return todos.reduce((acc, { completed }) => (completed ? acc + 1 : acc), 0);
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
   render() {
-    const { todos, filter } = this.state;
+    const { todos, filter, showModal } = this.state;
     const completedTodos = this.calculateCompletedTodos();
     const filteredTodos = this.getVisibleTodos();
     return (
@@ -139,6 +191,7 @@ class App2 extends Component {
           <p>Кол-во выполненных: {completedTodos}</p>
         </div>
         <TodoEditor onSubmit={this.addTodo} />
+
         <Filter value={filter} onChange={this.changeFilter} />
         {/* <Form2 onSubmit={this.formSubmitHandler} /> */}
 
@@ -147,6 +200,21 @@ class App2 extends Component {
           onDeleteTodo={this.deleteTodo}
           ontoggleCompleted={this.toggleCompleted}
         />
+        <button type="button" onClick={this.toggleModal}>
+          Открыть модалку
+        </button>
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <h1>Контент модалки</h1>
+            <p>
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
+              eveniet?
+            </p>
+            <button type="button" onClick={this.toggleModal}>
+              Закрыть
+            </button>
+          </Modal>
+        )}
       </>
     );
   }
