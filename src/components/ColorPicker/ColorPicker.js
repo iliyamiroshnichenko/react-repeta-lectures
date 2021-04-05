@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import './ColorPicker.css';
 
 // class ColorPickerClass extends Component {

@@ -1,0 +1,18 @@
+.IconButton {
+  margin: 0;
+  padding: 5px;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font: inherit;
+  background-color: green;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.IconButton:hover svg {
+  fill: rgb(214, 211, 211);
+}

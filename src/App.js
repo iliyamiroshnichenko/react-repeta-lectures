@@ -9,6 +9,10 @@ import { TodoEditor, TodoEditorFunc } from './components/TodoEditor/TodoEditor';
 import shortid from 'shortid';
 import Filter from './components/Filter/Filter';
 import { Modal, ModalFunc } from './components/Modal/Modal';
+// import Tabs from './components/Tabs/Tabs';
+// import tabs from './tabs.json';
+import IconButton from './components/IconButton';
+import { ReactComponent as AddIcon } from './icons/add.svg';
 
 // const colorPickerOptions = [
 //   { label: 'red', color: '#F44336' },
@@ -36,12 +40,16 @@ const App = () => {
   }, [todos]);
 
   const addTodo = text => {
+    if (!text) {
+      alert('Введите текст');
+    }
     const todo = {
       id: shortid.generate(),
       text,
       completed: false,
     };
     setTodos(prState => [todo, ...prState]);
+    toggleModal();
   };
 
   const deleteTodo = todoId =>
@@ -75,34 +83,23 @@ const App = () => {
   return (
     <>
       <h1>Состояние компонента</h1>
-      {/* <Form /> */}
-      {/* <Dropdown /> */}
-      {/* <Counter initialvalue={10} /> */}
-      {/* <ColorPicker options={colorPickerOptions} /> */}
+
+      <IconButton onClick={toggleModal} aria-label="Add todo">
+        <AddIcon width="40" height="40" fill="#fff" />
+      </IconButton>
       <div>
         <p>Общее кол-во: {todos.length}</p>
         <p>Кол-во выполненных: {completedTodos}</p>
       </div>
-      <TodoEditorFunc onSubmit={addTodo} />
       <Filter value={filter} onChange={changeFilter} />
       <TodoList
         todos={filteredTodos}
         onDeleteTodo={deleteTodo}
         ontoggleCompleted={toggleCompleted}
       />
-      <button type="button" onClick={toggleModal}>
-        Открыть модалку
-      </button>
       {modal && (
         <ModalFunc onClose={toggleModal}>
-          <h1>Контент модалки</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-            eveniet?
-          </p>
-          <button type="button" onClick={toggleModal}>
-            Закрыть
-          </button>
+          <TodoEditorFunc onSubmit={addTodo} />
         </ModalFunc>
       )}
     </>
@@ -111,31 +108,41 @@ const App = () => {
 
 class App2 extends Component {
   state = {
-    todos: initialTodos,
+    todos: [],
     filter: '',
     showModal: false,
   };
 
   componentDidMount() {
     const parsedTodos = JSON.parse(localStorage.getItem('todos'));
-    if (parsedTodos) {
+    if (parsedTodos.length) {
       this.setState({ todos: parsedTodos });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.todos !== prevState.todos) {
-      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+    const nextTodos = this.state.todos;
+    const prevTodos = prevState.todos;
+    if (nextTodos !== prevTodos) {
+      localStorage.setItem('todos', JSON.stringify(nextTodos));
+    }
+
+    if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+      this.toggleModal();
     }
   }
 
   addTodo = text => {
+    if (!text) {
+      alert('Введите текст');
+    }
     const todo = {
       id: shortid.generate(),
       text,
       completed: false,
     };
     this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
+    // this.toggleModal();
   };
 
   deleteTodo = todoId => {
@@ -186,33 +193,26 @@ class App2 extends Component {
     return (
       <>
         <h1>Состояние компонента</h1>
+        <IconButton onClick={this.toggleModal} aria-label="Add todo">
+          <AddIcon width="40" height="40" fill="#fff" />
+        </IconButton>
         <div>
           <p>Общее кол-во: {todos.length}</p>
           <p>Кол-во выполненных: {completedTodos}</p>
         </div>
-        <TodoEditor onSubmit={this.addTodo} />
 
         <Filter value={filter} onChange={this.changeFilter} />
-        {/* <Form2 onSubmit={this.formSubmitHandler} /> */}
-
         <TodoList
           todos={filteredTodos}
           onDeleteTodo={this.deleteTodo}
           ontoggleCompleted={this.toggleCompleted}
         />
-        <button type="button" onClick={this.toggleModal}>
+        {/* <button type="button" onClick={this.toggleModal}>
           Открыть модалку
-        </button>
+        </button> */}
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <h1>Контент модалки</h1>
-            <p>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-              eveniet?
-            </p>
-            <button type="button" onClick={this.toggleModal}>
-              Закрыть
-            </button>
+            <TodoEditor onSubmit={this.addTodo} />
           </Modal>
         )}
       </>
