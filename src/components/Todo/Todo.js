@@ -7,9 +7,6 @@ const Todo = ({ text, completed, ontoggleCompleted, onDelete }) => {
     <>
       <input type="checkbox" checked={completed} onChange={ontoggleCompleted} />
       <p className={completed ? styles.completed : styles.text}>{text}</p>
-      <button type="button" onClick={onDelete}>
-        Удалить
-      </button>
       <IconButton onClick={onDelete} aria-label="Delete todo">
         <DeleteIcon width="20" height="20" fill="#fff" />
       </IconButton>

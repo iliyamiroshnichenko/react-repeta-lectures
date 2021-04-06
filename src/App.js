@@ -1,10 +1,6 @@
-// import ColorPicker from './components/ColorPicker';
-// import Counter from './components/Counter';
-// import Dropdown from './components/Dropdown';
 import { useState, useEffect, Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './todos.json';
-// import { Form, Form2 } from './components/Form/Form';
 import { TodoEditor, TodoEditorFunc } from './components/TodoEditor/TodoEditor';
 import shortid from 'shortid';
 import Filter from './components/Filter/Filter';
@@ -13,6 +9,7 @@ import { Modal, ModalFunc } from './components/Modal/Modal';
 // import tabs from './tabs.json';
 import IconButton from './components/IconButton';
 import { ReactComponent as AddIcon } from './icons/add.svg';
+import axios from 'axios';
 
 // const colorPickerOptions = [
 //   { label: 'red', color: '#F44336' },
@@ -29,10 +26,10 @@ const App = () => {
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
-    const parsedTodos = JSON.parse(localStorage.getItem('todosHook'));
-    if (parsedTodos.length) {
-      setTodos(parsedTodos);
-    }
+    axios
+      .get('http://localhost:3000/todos')
+      .then(({ data }) => setTodos(data))
+      .catch(err => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -114,18 +111,18 @@ class App2 extends Component {
   };
 
   componentDidMount() {
-    const parsedTodos = JSON.parse(localStorage.getItem('todos'));
-    if (parsedTodos.length) {
-      this.setState({ todos: parsedTodos });
-    }
+    axios
+      .get('http://localhost:3000/todos')
+      .then(({ data }) => this.setState({ todos: data }))
+      .catch(err => console.log(err));
   }
 
   componentDidUpdate(prevProps, prevState) {
     const nextTodos = this.state.todos;
     const prevTodos = prevState.todos;
-    if (nextTodos !== prevTodos) {
-      localStorage.setItem('todos', JSON.stringify(nextTodos));
-    }
+    // if (nextTodos !== prevTodos) {
+    //   localStorage.setItem('todos', JSON.stringify(nextTodos));
+    // }
 
     if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
       this.toggleModal();
@@ -137,12 +134,12 @@ class App2 extends Component {
       alert('Введите текст');
     }
     const todo = {
-      id: shortid.generate(),
+      // id: shortid.generate(),
       text,
       completed: false,
     };
-    this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
-    // this.toggleModal();
+    axios.post('http://localhost:3000/todos', todo).then(console.log);
+    // this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
   };
 
   deleteTodo = todoId => {
