@@ -8,7 +8,7 @@
     {
       "id": "id-2",
       "text": "Разобраться с React Router",
-      "completed": false
+      "completed": true
     },
     {
       "id": "id-3",
@@ -18,22 +18,7 @@
     {
       "id": "id-4",
       "text": "Выучить Хуки",
-      "completed": false
-    },
-    {
-      "text": "ewecececwec",
-      "completed": false,
-      "id": "Tqqwjun"
-    },
-    {
-      "text": "",
-      "completed": false,
-      "id": "o8uaRSF"
-    },
-    {
-      "text": "swcecwececew12",
-      "completed": false,
-      "id": "NPp-f6N"
+      "completed": true
     }
   ]
 }

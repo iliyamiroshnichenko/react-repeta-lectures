@@ -2,23 +2,14 @@ import { useState, useEffect, Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './todos.json';
 import { TodoEditor, TodoEditorFunc } from './components/TodoEditor/TodoEditor';
-import shortid from 'shortid';
+// import shortid from 'shortid';
 import Filter from './components/Filter/Filter';
 import { Modal, ModalFunc } from './components/Modal/Modal';
 // import Tabs from './components/Tabs/Tabs';
 // import tabs from './tabs.json';
 import IconButton from './components/IconButton';
 import { ReactComponent as AddIcon } from './icons/add.svg';
-import axios from 'axios';
-
-// const colorPickerOptions = [
-//   { label: 'red', color: '#F44336' },
-//   { label: 'green', color: '#4CAF50' },
-//   { label: 'blue', color: '#2196F3' },
-//   { label: 'grey', color: '#607D8B' },
-//   { label: 'pink', color: '#E91E63' },
-//   { label: 'indigo', color: '#3F51B5' },
-// ];
+import todosApi from './services/todos.api';
 
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
@@ -26,38 +17,51 @@ const App = () => {
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/todos')
-      .then(({ data }) => setTodos(data))
+    todosApi
+      .fetchTodos()
+      .then(todos => setTodos(todos))
       .catch(err => console.log(err));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('todosHook', JSON.stringify(todos));
-  }, [todos]);
+  // useEffect(() => {
+  //   localStorage.setItem('todosHook', JSON.stringify(todos));
+  // }, [todos]);
 
   const addTodo = text => {
     if (!text) {
       alert('Введите текст');
     }
-    const todo = {
-      id: shortid.generate(),
+    const newTodo = {
       text,
       completed: false,
     };
-    setTodos(prState => [todo, ...prState]);
-    toggleModal();
+    todosApi.addtodo(newTodo).then(todo => {
+      setTodos(prState => [...prState, todo]);
+      toggleModal();
+    });
   };
 
   const deleteTodo = todoId =>
-    setTodos(prState => prState.filter(({ id }) => id !== todoId));
+    todosApi
+      .deleteTodo(todoId)
+      .then(() =>
+        setTodos(prState => prState.filter(({ id }) => id !== todoId)),
+      );
 
   const toggleCompleted = todoId => {
-    setTodos(prState =>
-      prState.map(todo =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+    const todo = todos.find(({ id }) => id === todoId);
+    const { completed } = todo;
+    const update = {
+      completed: !completed,
+    };
+
+    todosApi
+      .updateTodo(todoId, update)
+      .then(updTodo =>
+        setTodos(prState =>
+          prState.map(todo => (todo.id === updTodo.id ? updTodo : todo)),
+        ),
+      );
   };
 
   const changeFilter = e => {
@@ -111,49 +115,58 @@ class App2 extends Component {
   };
 
   componentDidMount() {
-    axios
-      .get('http://localhost:3000/todos')
-      .then(({ data }) => this.setState({ todos: data }))
+    todosApi
+      .fetchTodos()
+      .then(todos => this.setState({ todos }))
       .catch(err => console.log(err));
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const nextTodos = this.state.todos;
-    const prevTodos = prevState.todos;
-    // if (nextTodos !== prevTodos) {
-    //   localStorage.setItem('todos', JSON.stringify(nextTodos));
-    // }
+  // componentDidUpdate(prevProps, prevState) {
+  //   const nextTodos = this.state.todos;
+  //   const prevTodos = prevState.todos;
+  //   // if (nextTodos !== prevTodos) {
+  //   //   localStorage.setItem('todos', JSON.stringify(nextTodos));
+  //   // }
 
-    if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
-      this.toggleModal();
-    }
-  }
+  //   if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+  //     this.toggleModal();
+  //   }
+  // }
 
   addTodo = text => {
     if (!text) {
       alert('Введите текст');
     }
-    const todo = {
-      // id: shortid.generate(),
+    const newTodo = {
       text,
       completed: false,
     };
-    axios.post('http://localhost:3000/todos', todo).then(console.log);
-    // this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
+
+    todosApi.addtodo(newTodo).then(todo => {
+      this.setState(({ todos }) => ({ todos: [...todos, todo] }));
+      this.toggleModal();
+    });
   };
 
   deleteTodo = todoId => {
-    this.setState(prevState => ({
-      todos: prevState.todos.filter(({ id }) => id !== todoId),
-    }));
+    todosApi.deleteTodo(todoId).then(() => {
+      this.setState(prevState => ({
+        todos: prevState.todos.filter(({ id }) => id !== todoId),
+      }));
+    });
   };
 
   toggleCompleted = todoId => {
-    this.setState(({ todos }) => ({
-      todos: todos.map(todo =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    }));
+    const todo = this.state.todos.find(({ id }) => id === todoId);
+    const { completed } = todo;
+    const update = {
+      completed: !completed,
+    };
+    todosApi.updateTodo(todoId, update).then(updTodo =>
+      this.setState(({ todos }) => ({
+        todos: todos.map(todo => (todo.id === updTodo.id ? updTodo : todo)),
+      })),
+    );
   };
 
   formSubmitHandler = data => {
