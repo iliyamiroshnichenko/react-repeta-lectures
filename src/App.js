@@ -10,6 +10,7 @@ import { Modal, ModalFunc } from './components/Modal/Modal';
 import IconButton from './components/IconButton';
 import { ReactComponent as AddIcon } from './icons/add.svg';
 import todosApi from './services/todos.api';
+import { Articles, ArticlesFunc } from './components/Articles/Articles';
 
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
@@ -203,6 +204,7 @@ class App2 extends Component {
     return (
       <>
         <h1>Состояние компонента</h1>
+        <Articles />
         <IconButton onClick={this.toggleModal} aria-label="Add todo">
           <AddIcon width="40" height="40" fill="#fff" />
         </IconButton>
