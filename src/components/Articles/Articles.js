@@ -1,24 +1,23 @@
 import { Component } from 'react';
 import SearchForm from '../SearchForm/SearchForm';
-import axios from 'axios';
-
-axios.defaults.headers.common['Authorization'] =
-  'Bearer eeb40ede522f4eeca172d2d6e7658ecb';
+import newsApi from '../../services/news-api';
 
 class Articles extends Component {
   state = {
     articles: [],
     currentPage: 1,
     searchQuery: '',
+    isLoading: false,
+    error: null,
   };
-  componentDidMount() {
-    axios
-      .get('https://newsapi.org/v2/everything?q=react&pageSize=5')
-      .then(({ data: { articles } }) => {
-        console.log(articles);
-        this.setState({ articles: articles });
-      });
-  }
+  // componentDidMount() {
+  //   axios
+  //     .get('https://newsapi.org/v2/everything?q=react&pageSize=5')
+  //     .then(({ data: { articles } }) => {
+  //       console.log(articles);
+  //       this.setState({ articles: articles });
+  //     });
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
@@ -27,29 +26,40 @@ class Articles extends Component {
   }
 
   onChangeQuery = query => {
-    this.setState({ searchQuery: query });
+    this.setState({
+      searchQuery: query,
+      articles: [],
+      currentPage: 1,
+      error: null,
+    });
   };
 
   fetchArticles = () => {
     const { currentPage, searchQuery } = this.state;
-    axios
-      .get(
-        `https://newsapi.org/v2/everything?q=${searchQuery}&pageSize=5&page=${currentPage}`,
-      )
-      .then(({ data: { articles } }) => {
+    const options = { currentPage, searchQuery };
+    this.setState({ isLoading: true });
+
+    newsApi
+      .fetchArticles(options)
+      .then(articles => {
         this.setState(prState => ({
-          articles,
+          articles: [...prState.articles, ...articles],
           currentPage: prState.currentPage + 1,
         }));
-      });
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   render() {
-    const { articles } = this.state;
+    const { articles, isLoading, error } = this.state;
+    const shouldRenderLoadMoreBtn = articles.length > 0 && !isLoading;
     return (
       <>
         <h1>Статьи</h1>
+        {error && <h2>Ой, ошибка, все пропало (((</h2>}
         <SearchForm onSubmit={this.onChangeQuery} />
+
         <ul>
           {articles.map(({ title, url }) => (
             <li key={title}>
@@ -57,9 +67,12 @@ class Articles extends Component {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={this.fetchArticles}>
-          Загрузить еще
-        </button>
+        {isLoading && <h2>Loading...</h2>}
+        {shouldRenderLoadMoreBtn && (
+          <button type="button" onClick={this.fetchArticles}>
+            Загрузить еще
+          </button>
+        )}
         <br />
         <br />
       </>
@@ -67,13 +80,4 @@ class Articles extends Component {
   }
 }
 
-const ArticlesFunc = () => {
-  return (
-    <>
-      <h1>Статьи</h1>
-      <ul></ul>
-    </>
-  );
-};
-
-export { Articles, ArticlesFunc };
+export default Articles;

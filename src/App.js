@@ -10,7 +10,7 @@ import { Modal, ModalFunc } from './components/Modal/Modal';
 import IconButton from './components/IconButton';
 import { ReactComponent as AddIcon } from './icons/add.svg';
 import todosApi from './services/todos.api';
-import { Articles, ArticlesFunc } from './components/Articles/Articles';
+import Articles from './components/Articles/Articles';
 
 const App = () => {
   const [todos, setTodos] = useState(initialTodos);
