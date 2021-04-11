@@ -19,3 +19,13 @@ a {
 ul {
   list-style: none;
 }
+
+.Navlink {
+  font-size: 20px;
+  color: black;
+}
+
+.Navlink--active {
+  font-size: 20px;
+  color: red;
+}
