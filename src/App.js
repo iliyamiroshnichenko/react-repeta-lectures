@@ -26,9 +26,9 @@ const App = () => {
   return (
     <>
       <h1>Состояние компонента</h1>
-      <Dropdown />
+      {/* <Dropdown /> */}
       <Counter initialvalue={10} />
-      <ColorPicker options={colorPickerOptions} />
+      {/* <ColorPicker options={colorPickerOptions} /> */}
 
       <div>
         <p>Общее кол-во: {todos.length}</p>

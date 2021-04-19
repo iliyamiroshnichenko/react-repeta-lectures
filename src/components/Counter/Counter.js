@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { connect } from 'react-redux';
 import Controls from './Controls';
 import Value from './Value';
 import './Counter.css';
@@ -39,15 +39,17 @@ import './Counter.css';
 // }
 
 const Counter = ({ initialvalue }) => {
-  const [value, setValue] = useState(initialvalue);
-  const handleIncrement = () => setValue(prState => prState + 1);
-  const handleDecrement = () => setValue(prState => prState - 1);
+  // const [value, setValue] = useState(initialvalue);
+  // const handleIncrement = () => setValue(prState => prState + 1);
+  // const handleDecrement = () => setValue(prState => prState - 1);
   return (
     <div className="Counter">
-      <Value value={value} />
-      <Controls onIncrement={handleIncrement} onDecrement={handleDecrement} />
+      {/* <Value value={value} />
+      <Controls onIncrement={handleIncrement} onDecrement={handleDecrement} /> */}
     </div>
   );
 };
 
-export default Counter;
+const mapStateToProps = state => ({ d: 12 });
+
+export default connect(mapStateToProps)(Counter);
