@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import * as actions from '../../redux/counter/counter-actions';
 import Controls from './Controls';
 import Value from './Value';
 import './Counter.css';
@@ -38,18 +39,30 @@ import './Counter.css';
 //   }
 // }
 
-const Counter = ({ initialvalue }) => {
+const Counter = ({ value, step, onIncrement, onDecrement }) => {
   // const [value, setValue] = useState(initialvalue);
   // const handleIncrement = () => setValue(prState => prState + 1);
   // const handleDecrement = () => setValue(prState => prState - 1);
   return (
     <div className="Counter">
-      {/* <Value value={value} />
-      <Controls onIncrement={handleIncrement} onDecrement={handleDecrement} /> */}
+      <Value value={value} />
+      <Controls
+        step={step}
+        onIncrement={() => onIncrement(step)}
+        onDecrement={() => onDecrement(step)}
+      />
     </div>
   );
 };
 
-const mapStateToProps = state => ({ d: 12 });
+const mapStateToProps = state => ({
+  value: state.counter.value,
+  step: state.counter.step,
+});
 
-export default connect(mapStateToProps)(Counter);
+const mapDispatchToProps = dispatch => ({
+  onIncrement: value => dispatch(actions.increment(value)),
+  onDecrement: value => dispatch(actions.decrement(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);

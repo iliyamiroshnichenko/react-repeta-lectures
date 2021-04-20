@@ -1,10 +1,10 @@
-const Controls = ({ onIncrement, onDecrement }) => (
+const Controls = ({ step, onIncrement, onDecrement }) => (
   <div className="Counter__controls">
-    <button type="button" onClick={onIncrement}>
-      Увеличить на 1
-    </button>
     <button type="button" onClick={onDecrement}>
-      Уменьшить на 1
+      Уменьшить на {step}
+    </button>
+    <button type="button" onClick={onIncrement}>
+      Увеличить на {step}
     </button>
   </div>
 );

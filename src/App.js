@@ -27,7 +27,7 @@ const App = () => {
     <>
       <h1>Состояние компонента</h1>
       {/* <Dropdown /> */}
-      <Counter initialvalue={10} />
+      <Counter />
       {/* <ColorPicker options={colorPickerOptions} /> */}
 
       <div>
