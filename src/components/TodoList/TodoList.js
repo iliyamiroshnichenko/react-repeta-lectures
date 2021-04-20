@@ -1,4 +1,6 @@
 import './TodoList.css';
+import { connect } from 'react-redux';
+import todosActions from '../../redux/todos/todos-actions';
 
 const TodoList = ({ todos, onDeleteTodo }) => (
   <ul className="TodoList">
@@ -11,4 +13,19 @@ const TodoList = ({ todos, onDeleteTodo }) => (
   </ul>
 );
 
-export default TodoList;
+const getvisibleTodos = (allTodos, filter) => {
+  const normalizedFilter = filter.toLowerCase();
+  return allTodos.filter(({ text }) =>
+    text.toLowerCase().includes(normalizedFilter),
+  );
+};
+
+const mapStateToProps = ({ todos: { items, filter } }) => ({
+  todos: getvisibleTodos(items, filter),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onDeleteTodo: id => dispatch(todosActions.deleteTodo(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
